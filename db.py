@@ -59,3 +59,32 @@ async def get_users():
         users.append(user)
         
     return users
+
+async def create_user(name, surname, email, user_name, password):
+    conn = await get_connection()
+    async with conn.cursor() as cur:
+        await cur.execute("INSERT INTO user (name, surname, email, user_name, password) VALUES (%s, %s, %s, %s, %s)", (name, surname, email, user_name, password))
+        user_id = cur.lastrowid
+        await conn.commit()
+
+    conn.close()
+    return user_id
+
+async def update_user(user_id, name, surname, email, user_name, password):
+    conn = await get_connection()
+    async with conn.cursor() as cur:
+        await cur.execute(
+            "UPDATE user SET name=%s, surname=%s, email=%s, user_name=%s, password=%s WHERE user_id=%s",
+            (name, surname, email, user_name, password, user_id)
+            )
+        await conn.commit()
+                
+    return f"User with ID {user_id} has been modify"
+
+async def delete_user(user_id):
+    conn = await get_connection()
+    async with conn.cursor() as cur:
+        await cur.execute("DELETE FROM user WHERE user_id = %s", (user_id))
+        await conn.commit()
+                
+    return f"User with ID {user_id} has been deleted"
