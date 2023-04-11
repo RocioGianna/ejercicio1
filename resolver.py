@@ -1,29 +1,18 @@
-from db import get_user_by_id, get_users, get_users_filtered, create_user, delete_user, update_user, create_preferences, get_preferences
+from Model.User import User
 
+async def resolve_get_users_filtered(**args):
+    users = await User.get_users_filtered(**args)
+    return users
 
-def resolve_get_user_by_id(id):
-    return get_user_by_id(id)
+async def resolve_create_user(**args):
+    user = User()
+    await user.create_user(**args)
+    return user
 
+async def resolve_update_user(**args):
+    user = User()
+    await user.update_user(**args)
+    return user
 
-def resolve_get_users_filtered(**args):
-    return get_users_filtered(**args)
-
-def resolve_get_users():
-    return get_users()
-
-def resolve_create_user(**args):
-    return create_user(**args)
-
-
-def resolve_update_user(**args):
-    return update_user(**args)
-
-
-def resolve_delete_user(id):
-    return delete_user(id)
-
-def resolve_create_preferences(**args):
-    return create_preferences(**args)
-
-def resolve_get_preferences():
-    return get_preferences()
+def resolve_delete_user(**args):
+    return User.delete_user(**args)
