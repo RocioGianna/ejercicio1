@@ -84,27 +84,27 @@ class User:
         sql = "UPDATE user SET"
         params = []
         if 'name' in args['user']:
-            sql += " name = %s"
+            sql += " name = %s,"
             params.append(args['user']['name'])
         if 'surname' in args:
-            sql += ", surname = %s"
+            sql += " surname = %s,"
             params.append(args['user']['surname'])  
         if 'email' in args:
-            sql += ", surname = %s"
+            sql += " email = %s,"
             params.append(args['user']['email']) 
         if 'user_name' in args:
-            sql += ", surname = %s"
+            sql += " user_name = %s,"
             params.append(args['user']['user_name'])
-        await cur.execute(sql, params)
+        
+        sql.rstrip(',')
         async with conn.cursor() as cur:
-            await cur.execute(sql)
+            await cur.execute(sql, params)
             await conn.commit()
                     
         self.name = args['user']['name']
         self.surname = args['user']['surname']
         self.email = args['user']['email']
         self.user_name = args['user']['user_name']
-        self.password = args['user']['password']
     
 
     async def delete_user(**args):
@@ -115,7 +115,7 @@ class User:
                 await conn.commit()
         user = await User.get_users_filtered(id=(args['id']))       
         
-        if not user:
+        if len(user) == 0:
             return True
         else:
             return False
